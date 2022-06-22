@@ -28,7 +28,7 @@ class History extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Icon(
               Icons.history,
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(context).textTheme.titleSmall?.color,
             ),
           ),
         )

@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   int _selectedIndex = 0;
 
   // List of screen based on bottom navigation
-  final List<Widget> _bottomNavigationScreens = const [
+  final List<Widget> _bottomNavigationScreens = [
     Calculator(),
     ScientificCalculator()
   ];
