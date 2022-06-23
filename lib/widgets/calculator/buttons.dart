@@ -1,15 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
-  const MyButton({
-    Key? key,
-    this.flex = 1,
-    this.buttonColor,
-    required this.textSpecialColor,
-    required this.buttonTextWidget,
-    this.width,
-    this.isScientific = false,
-  })  : isText = (buttonTextWidget is String?) ? true : false,
+  const MyButton(
+      {Key? key,
+      this.flex = 1,
+      this.buttonColor,
+      required this.textSpecialColor,
+      required this.buttonTextWidget,
+      this.width,
+      this.isScientific = false,
+      required this.onBtnClick,
+      this.onBtnLongPress})
+      : isText = (buttonTextWidget is String?) ? true : false,
         super(key: key);
   final int flex;
   final Color? buttonColor;
@@ -18,13 +22,16 @@ class MyButton extends StatelessWidget {
   final bool isText;
   final bool isScientific;
   final double? width;
+  final void Function()? onBtnClick;
+  final void Function()? onBtnLongPress;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: flex,
       child: InkWell(
-        onTap: () {},
+        onTap: onBtnClick,
+        onLongPress: onBtnLongPress,
         child: Container(
           margin: isScientific ? null : const EdgeInsets.all(10),
           width: width,
@@ -52,8 +59,7 @@ class MyButton extends StatelessWidget {
                                       ?.color),
                           fontFamily: "Poppins",
                           fontSize: isScientific ? 18 : 25,
-                          fontWeight:
-                              isScientific ? FontWeight.w400 : FontWeight.w700,
+                          fontWeight: FontWeight.w400,
                         ),
                       )
                     : Icon(

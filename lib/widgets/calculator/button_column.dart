@@ -21,6 +21,12 @@ class ButtonColumn extends StatelessWidget {
     this.button4SpecialColor = false,
     this.button5SpecialColor = false,
     this.isScientific = false,
+    required this.button1Method,
+    required this.button2Method,
+    required this.button3Method,
+    required this.button4Method,
+    this.button5Method,
+    this.onBtnLongPress
   })  : assert(
           button1Text == null || button1Icon == null,
           'Cannot provide both a Text and a Icon.',
@@ -51,6 +57,8 @@ class ButtonColumn extends StatelessWidget {
             "Either Text or Icon is required"),
         assert(button4IsLarge || button5Text != null || button5Icon != null,
             "Either Text or Icon is required"),
+        assert(button4IsLarge || button5Method != null,
+            "Button 5 Click Method is required"),
         super(key: key);
 
   final String? button1Text;
@@ -75,6 +83,13 @@ class ButtonColumn extends StatelessWidget {
 
   final bool isScientific;
 
+  final void Function() button1Method;
+  final void Function() button2Method;
+  final void Function() button3Method;
+  final void Function() button4Method;
+  final void Function()? button5Method;
+  final void Function()? onBtnLongPress;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -85,16 +100,20 @@ class ButtonColumn extends StatelessWidget {
             buttonTextWidget: button1Text ?? button1Icon,
             textSpecialColor: button1SpecialColor ? 1 : 0,
             isScientific: isScientific,
+            onBtnClick: button1Method,
+            onBtnLongPress: onBtnLongPress,
           ),
           MyButton(
             buttonTextWidget: button2Text ?? button2Icon,
             textSpecialColor: button2SpecialColor ? 1 : 0,
             isScientific: isScientific,
+            onBtnClick: button2Method,
           ),
           MyButton(
             buttonTextWidget: button3Text ?? button3Icon,
             textSpecialColor: button3SpecialColor ? 1 : 0,
             isScientific: isScientific,
+            onBtnClick: button3Method,
           ),
           MyButton(
             buttonTextWidget: button4Text ?? button4Icon,
@@ -107,6 +126,7 @@ class ButtonColumn extends StatelessWidget {
                 button4IsLarge ? Theme.of(context).primaryColorLight : null,
             flex: button4IsLarge ? 2 : 1,
             isScientific: isScientific,
+            onBtnClick: button4Method,
             width: button4IsLarge && isScientific
                 ? MediaQuery.of(context).size.width * 0.05
                 : null,
@@ -116,6 +136,7 @@ class ButtonColumn extends StatelessWidget {
               buttonTextWidget: button5Text ?? button5Icon,
               textSpecialColor: button5SpecialColor ? 1 : 0,
               isScientific: isScientific,
+              onBtnClick: button5Method,
             ),
           ]
         ],

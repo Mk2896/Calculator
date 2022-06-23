@@ -2,6 +2,7 @@ import 'package:calculator/my_flutter_app_icons.dart';
 import 'package:calculator/screens/calculator.dart';
 import 'package:calculator/screens/history.dart';
 import 'package:calculator/screens/scientific_calculator.dart';
+import 'package:calculator/widgets/global/calculation_part.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   late DragUpdateDetails _updateDragDetails;
   late double _startHistoryTop;
 
+  final ScrollController historyScroll = ScrollController();
   // Variable to set history animation
   final int _durationStackAnimation = 700;
   // Variable that make sure screen orientation set only once in didChangeDependencies method
@@ -33,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   // List of screen based on bottom navigation
   final List<Widget> _bottomNavigationScreens = [
-    Calculator(),
+    const Calculator(),
     ScientificCalculator()
   ];
 
@@ -42,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     WidgetsBinding.instance.addObserver(this);
+    historyScroll.addListener(() => onScroll());
   }
 
   @override
@@ -65,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
+    historyScroll.removeListener(() => onScroll());
     super.dispose();
   }
 
@@ -107,6 +111,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
   }
 
+  void onScroll() {
+    if (historyScroll.offset == 0) {
+      _historyTop = -_screenHeight;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +134,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       body: SafeArea(
         child: Stack(
           children: [
-            _bottomNavigationScreens.elementAt(_selectedIndex),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const CalculationPart(),
+                _bottomNavigationScreens.elementAt(_selectedIndex),
+              ],
+            ),
             AnimatedPositioned(
               duration: Duration(milliseconds: _durationStackAnimation),
               curve: Curves.slowMiddle,
@@ -152,15 +169,16 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   } else if (dy > 100) {
                     _historyTop = 0;
                   } else {
-                    if (_historyTop < _screenHeight / 2) {
-                      _historyTop = -_screenHeight;
-                    } else {
+                    if (_historyTop != 0 && _historyTop != -_screenHeight) {
                       _historyTop = 0;
                     }
                   }
                   setState(() {});
                 },
-                child: History(openHistoryMethod: openHistoryMethod),
+                child: History(
+                  openHistoryMethod: openHistoryMethod,
+                  historyScroll: historyScroll,
+                ),
               ),
             ),
           ],
