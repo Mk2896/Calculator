@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:calculator/models/calculations.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -13,6 +10,8 @@ class CustomTextField extends StatelessWidget {
     this.fontSize,
     required this.textController,
     this.scrollController,
+    this.initialValue,
+    this.isReadonly = false,
   }) : super(key: key);
   final double topMargin;
   final double bottomMargin;
@@ -21,6 +20,8 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? textController;
   final ScrollController? scrollController;
   final double? fontSize;
+  final String? initialValue;
+  final bool isReadonly;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,6 +36,8 @@ class CustomTextField extends StatelessWidget {
           ? MediaQuery.of(context).size.width
           : MediaQuery.of(context).size.width * 0.85,
       child: TextFormField(
+        enableInteractiveSelection: false,
+        initialValue: initialValue,
         controller: textController,
         scrollController: scrollController,
         toolbarOptions: const ToolbarOptions(
@@ -44,6 +47,7 @@ class CustomTextField extends StatelessWidget {
           selectAll: false,
         ),
         autofocus: true,
+        readOnly: isReadonly,
         cursorWidth: 4,
         cursorRadius: const Radius.circular(5),
         textAlign: TextAlign.end,

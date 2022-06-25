@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
@@ -58,7 +56,7 @@ class MyButton extends StatelessWidget {
                                       .titleSmall
                                       ?.color),
                           fontFamily: "Poppins",
-                          fontSize: isScientific ? 18 : 25,
+                          fontSize: isScientific ? 20 : 25,
                           fontWeight: FontWeight.w400,
                         ),
                       )

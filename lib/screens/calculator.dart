@@ -2,14 +2,9 @@ import 'package:calculator/models/calculations.dart';
 import 'package:calculator/widgets/calculator/button_column.dart';
 import 'package:flutter/material.dart';
 
-class Calculator extends StatefulWidget {
+class Calculator extends StatelessWidget {
   const Calculator({Key? key}) : super(key: key);
 
-  @override
-  State<Calculator> createState() => _CalculatorState();
-}
-
-class _CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -32,26 +27,26 @@ class _CalculatorState extends State<Calculator> {
               button5Method: () => Calculation.operandClick("%"),
             ),
             ButtonColumn(
-              button1Text: "/",
+              button1Text: "÷",
               button1SpecialColor: true,
               button2Text: "8",
               button3Text: "5",
               button4Text: "2",
               button5Text: "0",
-              button1Method: () => Calculation.operandClick("/"),
+              button1Method: () => Calculation.operandClick("÷"),
               button2Method: () => Calculation.operandClick("8"),
               button3Method: () => Calculation.operandClick("5"),
               button4Method: () => Calculation.operandClick("2"),
               button5Method: () => Calculation.operandClick("0"),
             ),
             ButtonColumn(
-              button1Text: "*",
+              button1Text: "×",
               button1SpecialColor: true,
               button2Text: "9",
               button3Text: "6",
               button4Text: "3",
               button5Text: ".",
-              button1Method: () => Calculation.operandClick("*"),
+              button1Method: () => Calculation.operandClick("×"),
               button2Method: () => Calculation.operandClick("9"),
               button3Method: () => Calculation.operandClick("6"),
               button4Method: () => Calculation.operandClick("3"),

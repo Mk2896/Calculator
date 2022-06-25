@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:calculator/models/calculations.dart';
 import 'package:calculator/models/theme.dart';
 import 'package:calculator/screens/my_home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -24,12 +23,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     WidgetsBinding.instance.addObserver(this);
     _getPreference();
   }
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
 

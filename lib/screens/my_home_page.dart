@@ -1,3 +1,4 @@
+import 'package:calculator/models/calculations.dart';
 import 'package:calculator/my_flutter_app_icons.dart';
 import 'package:calculator/screens/calculator.dart';
 import 'package:calculator/screens/history.dart';
@@ -5,6 +6,7 @@ import 'package:calculator/screens/scientific_calculator.dart';
 import 'package:calculator/widgets/global/calculation_part.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -14,14 +16,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
-  // Variable to detect swipe direction
-  late DragStartDetails _startDragDetails;
-  late DragUpdateDetails _updateDragDetails;
-  late double _startHistoryTop;
+  // Variable used by smartrefresher to close screen
+  final RefreshController refreshController = RefreshController();
 
-  final ScrollController historyScroll = ScrollController();
   // Variable to set history animation
   final int _durationStackAnimation = 700;
+
   // Variable that make sure screen orientation set only once in didChangeDependencies method
   bool _runFirstTime = true;
 
@@ -34,17 +34,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   int _selectedIndex = 0;
 
   // List of screen based on bottom navigation
-  final List<Widget> _bottomNavigationScreens = [
-    const Calculator(),
-    ScientificCalculator()
+  final List<Widget> _bottomNavigationScreens = const [
+    Calculator(),
+    ScientificCalculator(),
   ];
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     WidgetsBinding.instance.addObserver(this);
-    historyScroll.addListener(() => onScroll());
   }
 
   @override
@@ -66,9 +64,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
-    historyScroll.removeListener(() => onScroll());
     super.dispose();
   }
 
@@ -111,11 +106,19 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
   }
 
+  // Method for closing history
   void onScroll() {
-    if (historyScroll.offset == 0) {
-      _historyTop = -_screenHeight;
-      setState(() {});
-    }
+    _historyTop = -_screenHeight;
+    refreshController.loadComplete();
+    refreshController.refreshCompleted();
+    setState(() {});
+  }
+
+  // Method for clearing history
+  void clearHistory() {
+    setState(() {
+      Calculation.clearHistory();
+    });
   }
 
   @override
@@ -145,40 +148,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               duration: Duration(milliseconds: _durationStackAnimation),
               curve: Curves.slowMiddle,
               top: _historyTop,
-              child: GestureDetector(
-                onVerticalDragStart: (drag) {
-                  _startDragDetails = drag;
-                  _startHistoryTop = _historyTop;
-                },
-                onVerticalDragUpdate: (drag) {
-                  _updateDragDetails = drag;
-                  double dy = _updateDragDetails.globalPosition.dy -
-                      _startDragDetails.globalPosition.dy;
-                  if ((dy < -100 && _startHistoryTop != -_screenHeight) ||
-                      (dy > 100 && _startHistoryTop != 0)) {
-                    _historyTop =
-                        -(_screenHeight - _updateDragDetails.globalPosition.dy);
-                    setState(() {});
-                  }
-                },
-                onVerticalDragEnd: (drag) {
-                  double dy = _updateDragDetails.globalPosition.dy -
-                      _startDragDetails.globalPosition.dy;
-                  if (dy < -100) {
-                    _historyTop = -_screenHeight;
-                  } else if (dy > 100) {
-                    _historyTop = 0;
-                  } else {
-                    if (_historyTop != 0 && _historyTop != -_screenHeight) {
-                      _historyTop = 0;
-                    }
-                  }
-                  setState(() {});
-                },
-                child: History(
-                  openHistoryMethod: openHistoryMethod,
-                  historyScroll: historyScroll,
-                ),
+              child: History(
+                openHistoryMethod: openHistoryMethod,
+                onScrollMethod: onScroll,
+                refreshController: refreshController,
+                clearHistory: clearHistory,
               ),
             ),
           ],
