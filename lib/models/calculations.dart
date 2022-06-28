@@ -1,4 +1,3 @@
-
 import 'package:math_expressions/math_expressions.dart';
 
 import 'package:flutter/material.dart';
@@ -21,8 +20,8 @@ class Calculation {
     "+",
     "^2",
     "^",
-    "!"
-        ")"
+    "!",
+    ")",
   ];
   static final Map<String, List<String>> _cantRepeatConsecutivelyKeys = {
     "×": ["×", "÷", "+", "-", "%", "!", "^", "^2", ")"],

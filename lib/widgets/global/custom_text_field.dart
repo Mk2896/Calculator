@@ -31,7 +31,7 @@ class CustomTextField extends StatelessWidget {
         left: leftMargin,
         right: rightMargin,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       width: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.width
           : MediaQuery.of(context).size.width * 0.85,
